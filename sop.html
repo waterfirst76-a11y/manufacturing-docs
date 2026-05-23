@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVD 공정 표준 작업 절차서 (SOP)</title>
+    <style>
+        /* 변수 선언 (기업 표준 색상 가이드라인 반영) */
+        :root {
+            --primary-color: #1a365d;     /* Deep Navy */
+            --secondary-color: #2b6cb0;   /* Slate Blue */
+            --accent-danger: #c53030;     /* Deep Red for Safety */
+            --accent-warning: #dd6b20;    /* Amber for Caution */
+            --text-color: #2d3748;        /* Charcoal Text */
+            --bg-light: #f7fafc;          /* Off-white Background */
+            --border-color: #e2e8f0;      /* Light Gray Border */
+            --success-color: #2f855a;     /* Muted Green */
+        }
+
+        /* 기본 초기화 및 기본 스타일 */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 컨트롤 패널 (웹 전용) */
+        .control-panel {
+            background-color: #edf2f7;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .preset-select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .print-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .print-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* 헤더 섹션 */
+        .sop-header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo-placeholder {
+            font-weight: 800;
+            font-size: 18px;
+            color: #718096;
+            letter-spacing: 1px;
+            border: 2px dashed #cbd5e0;
+            padding: 8px 15px;
+            background: #f8fafc;
+        }
+        .doc-title-container {
+            text-align: center;
+            flex-grow: 1;
+        }
+        .doc-title-container h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .doc-title-container p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        /* 문서 메타데이터 테이블 */
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        .meta-table th, .meta-table td {
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            text-align: left;
+        }
+        .meta-table th {
+            background-color: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+            width: 15%;
+        }
+        .meta-table td {
+            width: 18%;
+        }
+
+        /* 개정 이력 요약 */
+        .rev-summary {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* 섹션 공통 스타일 */
+        h2 {
+            color: var(--primary-color);
+            font-size: 18px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 알림/주의사항 박스 */
+        .alert-box {
+            border-left: 4px solid var(--accent-danger);
+            background-color: #fff5f5;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+        .alert-box h3 {
+            margin: 0 0 8px 0;
+            color: var(--accent-danger);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .alert-box ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13.5px;
+            color: #2d3748;
+        }
+        .alert-box li {
+            margin-bottom: 4px;
+        }
+
+        /* 장비 파라미터 테이블 */
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 13.5px;
+        }
+        .param-table th, .param-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: center;
+        }
+        .param-table th {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        .param-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .param-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        /* 인터랙티브 체크리스트 */
+        .checklist-group {
+            margin-bottom: 25px;
+        }
+        .checklist-group h4 {
+            margin: 15px 0 10px 0;
+            font-size: 14px;
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf2f7;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .check-item:hover {
+            background-color: #f7fafc;
+        }
+        .check-item input[type="checkbox"] {
+            margin-top: 4px;
+            margin-right: 12px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--success-color);
+        }
+        .check-text {
+            font-size: 14px;
+            user-select: none;
+            flex-grow: 1;
+        }
+        .check-desc {
+            display: block;
+            font-size: 12px;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        /* 체크박스 선택 시 스타일 변경 */
+        .check-item.completed {
+            background-color: #f0fff4;
+        }
+        .check-item.completed .check-text {
+            color: #a0aec0;
+            text-decoration: line-through;
+        }
+        .check-item.completed .check-desc {
+            color: #cbd5e0;
+        }
+
+        /* 개정 이력 섹션 */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        .history-table th, .history-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .history-table th {
+            background-color: #f8fafc;
+            color: #4a5568;
+        }
+
+        /* 승인 서명란 */
+        .approval-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .approval-table {
+            width: 300px;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .approval-table th, .approval-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: center;
+        }
+        .approval-table th {
+            background-color: #f8fafc;
+            width: 50%;
+        }
+        .approval-table td {
+            height: 50px;
+            vertical-align: bottom;
+            color: #a0aec0;
+        }
+
+        /* 반응형 디자인 미디어 쿼리 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header-top {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .meta-table th, .meta-table td {
+                display: block;
+                width: 100% !important;
+            }
+            .meta-table tr {
+                border-bottom: 2px solid var(--border-color);
+                display: block;
+                margin-bottom: 10px;
+            }
+            .meta-table th {
+                background-color: #edf2f7;
+            }
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .print-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* 인쇄 최적화 스타일 시트 */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+                color: #000;
+            }
+            .container {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .control-panel {
+                display: none !important; /* 제어창 숨김 */
+            }
+            input[type="checkbox"] {
+                border: 1px solid #000;
+                background: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .check-item {
+                page-break-inside: avoid;
+            }
+            .check-item.completed {
+                background-color: transparent !important;
+            }
+            .check-item.completed .check-text {
+                color: #000 !important;
+                text-decoration: none !important; /* 인쇄물에는 취소선 제거하여 가독성 확보 */
+            }
+            h2 {
+                page-break-after: avoid;
+            }
+            .history-table, .param-table, .meta-table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- 웹 전용 컨트롤러 패널 -->
+        <div class="control-panel">
+            <div>
+                <label for="recipePreset" style="font-size: 14px; font-weight: 600; margin-right: 8px;">📍 공정 레시피 프리셋 선택:</label>
+                <select id="recipePreset" class="preset-select" onchange="updateRecipe()">
+                    <option value="oxide">PECVD Oxide (산화막 증착)</option>
+                    <option value="nitride">PECVD Nitride (질화막 증착)</option>
+                </select>
+            </div>
+            <button class="print-btn" onclick="window.print()">🖨️ 양식 인쇄하기 (Print SOP)</button>
+        </div>
+
+        <!-- SOP 양식 헤더 영역 -->
+        <header class="sop-header">
+            <div class="header-top">
+                <div class="logo-placeholder">[COMPANY LOGO]</div>
+                <div class="doc-title-container">
+                    <h1>표준 작업 절차서 (SOP)</h1>
+                    <p>Standard Operating Procedure</p>
+                </div>
+                <div style="width: 120px;"></div> <!-- 우측 밸런스 유지용 플라시보 공간 -->
+            </div>
+
+            <!-- 문서 메타데이터 관리 테이블 -->
+            <table class="meta-table">
+                <tr>
+                    <th>문서 번호</th>
+                    <td>SOP-FAB-CVD-001</td>
+                    <th>공정 분류</th>
+                    <td>박막 증착 (CVD)</td>
+                    <th>개정 번호</th>
+                    <td>Rev. 2.3</td>
+                </tr>
+                <tr>
+                    <th>작성 부서</th>
+                    <td>공정기술팀</td>
+                    <th>최초 작성일</th>
+                    <td>2024-03-15</td>
+                    <th>최종 개정일</th>
+                    <td>2026-05-23</td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td>김기술 책임연구원</td>
+                    <th>검토자</th>
+                    <td>박관리 파트장</td>
+                    <th>승인자</th>
+                    <td>최제조 센터장</td>
+                </tr>
+            </table>
+            <div class="rev-summary">*주요 개정 사양: 정기 예방보전(PM) 후 가스 라인 Purge 시간 및 파라미터 기준 최적화</div>
+        </header>
+
+        <!-- 1. 안전 및 환경 주의사항 -->
+        <section>
+            <h2>1. 안전 및 환경 주의사항 (Safety & Environment)</h2>
+            <div class="alert-box">
+                <h3>⚠️ 독성 및 인화성 가스 경고 (SiH4, NH3, NF3)</h3>
+                <ul>
+                    <li><strong>특수 가스 누출 위험:</strong> 실란(SiH4)은 대기 노출 시 자연 발화하며, 암모니아(NH3)는 강한 독성 및 부식성을 가집니다. 작업 전 가스 인터록 및 스크러버 감지기 가동 상태를 반드시 필하십시요.</li>
+                    <li><strong>고전압 및 고온 주의:</strong> RF Generator(13.56MHz) 가동 중 매칭 네트워크 및 전극 주위 접촉을 금지하며, Chamber 서셉터 고온(400°C) 화상에 주의하십시오.</li>
+                    <li><strong>복장 규정:</strong> 유지보수 및 챔버 Wet Clean 작업 시에는 반드시 화하물 방호복, 내산성 장갑 및 송기 마스크를 착용해야 합니다.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. 표준 공정 파라미터 -->
+        <section>
+            <h2>2. 장비 타겟 파라미터 (Process Parameters)</h2>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>공정 항목 (Parameter)</th>
+                        <th>설정 기준치 (Target Spec)</th>
+                        <th>허용 공차 (Control Limit)</th>
+                        <th>단위 (Unit)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>챔버 내부 압력 (Pressure)</td>
+                        <td id="param-press" class="param-value">3.0</td>
+                        <td>± 0.1</td>
+                        <td>Torr</td>
+                    </tr>
+                    <tr>
+                        <td>서셉터 온도 (Susceptor Temp)</td>
+                        <td id="param-temp" class="param-value">400</td>
+                        <td>± 5</td>
+                        <td>°C</td>
+                    </tr>
+                    <tr>
+                        <td>RF 고주파 파워 (RF Power)</td>
+                        <td id="param-rf" class="param-value">1500</td>
+                        <td>± 30</td>
+                        <td>W</td>
+                    </tr>
+                    <tr>
+                        <td>반응 가스 1 유량 (SiH4)</td>
+                        <td id="param-gas1" class="param-value">180</td>
+                        <td>± 5</td>
+                        <td>sccm</td>
+                    </tr>
+                    <tr>
+                        <td>반응 가스 2 유량 (<span id="gas2-name">N2O</span>)</td>
+                        <td id="param-gas2" class="param-value">1200</td>
+                        <td>Default</td>
+                        <td>sccm</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 3. 공정 작업 절차 (체크리스트) -->
+        <section>
+            <h2>3. 공정 작업 절차 및 체크리스트 (Operating Procedure)</h2>
+            <p style="font-size: 13px; color: #4a5568; margin-top:-5px; margin-bottom:15px;">※ 각 단계를 수행한 후 왼쪽 체크박스를 선택하면 완료 표시가 적용됩니다.</p>
+            
+            <!-- 3-1. 공정 전 확인 사항 -->
+            <div class="checklist-group">
+                <h4>3-1. 공정 전 사전 확인 (Pre-Operation Checks)</h4>
+                
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        설비 Utility 공급 상태 확인
+                        <span class="check-desc">Chamber 구동용 부하 진공(Dry Pump) 및 쿨링 워터(PCW) 압력이 정상 범위인지 확인하십시오.</span>
+                    </span>
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        가스 공급 라인(VMB) 및 압력 확인
+                        <span class="check-desc">SiH4, N2O, N2 등 사용 가스의 메인 밸브가 오픈 상태이며 Primary 압력이 정상인지 모니터링 시스템을 점검하십시오.</span>
+                    </span>
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        인터록(Interlock) 상태 점검
+                        <span class="check-desc">설비 클러스터 메인 화면에 알람(Alarm) 유무를 체크하고 인터록 바이패스 항목이 없음을 확인하십시오.</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- 3-2. 본 공정 진행 절차 -->
+            <div class="checklist-group">
+                <h4>3-2. 본 공정 진행 절차 (Main Process Execution)</h4>
+                
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        더미 웨이퍼(Dummy Wafer) 컨디셔닝 러닝
+                        <span class="check-desc">본 공정 진입 전 챔버 에이징 및 파티클 트랩 방지를 위해 더미 웨이퍼 2매 증착 러닝을 실시합니다.</span>
+                    </span>
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        생산 제품 레시피(Recipe) 로딩 및 검증
+                        <span class="check-desc">생산 지시서에 명시된 타겟 박막(Oxide/Nitride) 레시피 번호와 장비 스크린상의 파라미터가 일치하는지 재확인하십시오.</span>
+                    </span>
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        웨이퍼 로딩 및 자동 공정 스타트 (Auto Run)
+                        <span class="check-desc">EFEM 로봇을 통해 웨이퍼가 정상 이송되는지 확인 후 메인 공정을 개시하고, 플라즈마 점등(Plasma Ignition) 신호를 육안 혹은 센서로 모니터링하십시오.</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- 3-3. 공정 후 조치 사항 -->
+            <div class="checklist-group">
+                <h4>3-3. 공정 후 조치 및 품질 확인 (Post-Operation & Quality Control)</h4>
+                
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        챔버 사후 가스 배기 및 Purge 진행
+                        <span class="check-desc">공정 완료 직후 잔류 유독 가스 배출을 위해 N2 가스를 이용한 3회 이상의 cyclic purge가 도달했는지 확인하십시오.</span>
+                    </span>
+                </label>
+
+                <label class="check-item">
+                    <input type="checkbox" onclick="toggleCheck(this)">
+                    <span class="check-text">
+                        품질 샘플링 측정 (두께 및 굴절률 확인)
+                        <span class="check-desc">증착 완료된 모니터 웨이퍼를 엘립소미터(Ellipsometer) 장비로 이송하여 막 두께(Thickness)와 Uniformity, 굴절률(R.I)을 측정 후 SPC 차트에 기록하십시오.</span>
+                    </span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 4. 개정 이력 관리 -->
+        <section>
+            <h2>4. 개정 이력 (Revision History)</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">개정일자</th>
+                        <th style="width: 10%;">버전</th>
+                        <th style="width: 55%;">개정 사유 및 상세 내용</th>
+                        <th style="width: 20%;">작성자 / 검토자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-03-15</td>
+                        <td>Rev. 1.0</td>
+                        <td>PECVD 신규 장비 도입에 따른 최초 표준 가이드라인 제정</td>
+                        <td>김기술 / 박관리</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-20</td>
+                        <td>Rev. 2.0</td>
+                        <td>NF3 In-situ Chamber Clean 스텝 및 리모트 플라즈마 파라미터 변경 반영</td>
+                        <td>이공정 / 박관리</td>
+                    </tr>
+                    <tr>
+                        <td>2026-05-23</td>
+                        <td>Rev. 2.3</td>
+                        <td>상부 가스 분산판(Showerhead) 간격 조정 및 Purge 시퀀스 최적화 사양 추가</td>
+                        <td>김기술 / 박관리</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 최종 승인란 -->
+        <footer class="approval-section">
+            <table class="approval-table">
+                <tr>
+                    <th>검 토</th>
+                    <th>승 인</th>
+                </tr>
+                <tr>
+                    <td>(서명/인)</td>
+                    <td>(서명/인)</td>
+                </tr>
+            </table>
+        </footer>
+
+    </div>
+
+    <!-- 인터랙티브 스크립트 기능 처리 -->
+    <script>
+        // 체크박스 클릭 시 스타일 토글 기능
+        function toggleCheck(checkbox) {
+            const label = checkbox.closest('.check-item');
+            if (checkbox.checked) {
+                label.classList.add('completed');
+            } else {
+                label.classList.remove('completed');
+            }
+        }
+
+        // 레시피 선택 변경에 따른 파라미터 테이블 동적 변경 함수
+        function updateRecipe() {
+            const select = document.getElementById('recipePreset');
+            const selectedValue = select.value;
+
+            // 엘리먼트 타겟 정의
+            const press = document.getElementById('param-press');
+            const temp = document.getElementById('param-temp');
+            const rf = document.getElementById('param-rf');
+            const gas1 = document.getElementById('param-gas1');
+            const gas2 = document.getElementById('param-gas2');
+            const gas2Name = document.getElementById('gas2-name');
+
+            if (selectedValue === 'oxide') {
+                // PECVD Oxide 데이터 셋팅
+                press.innerText = '3.0';
+                temp.innerText = '400';
+                rf.innerText = '1500';
+                gas1.innerText = '180';
+                gas2Name.innerText = 'N2O';
+                gas2.innerText = '1200';
+            } else if (selectedValue === 'nitride') {
+                // PECVD Nitride 데이터 셋팅
+                press.innerText = '2.5';
+                temp.innerText = '380';
+                rf.innerText = '1200';
+                gas1.innerText = '220';
+                gas2Name.innerText = 'NH3';
+                gas2.innerText = '450';
+            }
+        }
+    </script>
+</body>
+</html>

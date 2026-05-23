@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제조 엔지니어링 스마트 문서 포털</title>
+    <style>
+        /* 변수 설정 - 반도체/디스플레이 하이테크 FAB 테마 */
+        :root {
+            --primary-navy: #0f172a;       /* Slate 900 */
+            --secondary-slate: #1e293b;    /* Slate 800 */
+            --accent-blue: #3b82f6;        /* Blue 500 */
+            --accent-indigo: #6366f1;      /* Indigo 500 */
+            --border-color: #e2e8f0;       /* Slate 200 */
+            --bg-base: #f8fafc;            /* Slate 50 */
+            --text-main: #475569;          /* Slate 600 */
+            --text-title: #0f172a;         /* Slate 900 */
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: block;
+        }
+
+        /* 메인 컨테이너 */
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 상단 네비게이션 헤더 정보 */
+        .meta-header {
+            display: table;
+            width: 100%;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+        }
+        .meta-left {
+            display: table-cell;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .meta-right {
+            display: table-cell;
+            text-align: right;
+            vertical-align: middle;
+        }
+        .company-badge {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+        }
+        .dept-badge {
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #e2e8f0;
+            color: var(--secondary-slate);
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .sys-status {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        /* 인트로 보드 섹션 */
+        .intro-section {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-slate) 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
+        }
+        .intro-section h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+        }
+        .intro-section p {
+            font-size: 15px;
+            color: #cbd5e1;
+            margin: 0;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        /* 반응형 2열 구조 카드 세션 테이블/그리드 시뮬레이션 */
+        /* WeasyPrint 및 구형 렌더러 호환을 위해 블록+마진 및 퍼센트 가로배치 구조 적용 */
+        .grid-container {
+            width: 100%;
+            display: table;
+            border-collapse: separate;
+            border-spacing: 20px 20px;
+            margin: -20px;
+        }
+        .grid-row {
+            display: table-row;
+        }
+        .grid-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        /* 문서 카드 링크 스타일링 */
+        .doc-card {
+            display: block;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+        .doc-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(59, 130, 246, 0.15);
+        }
+
+        /* 카드 내부 컴포넌트 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .icon-box {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background-color: #f1f5f9;
+            transition: all 0.2s;
+        }
+        .doc-card:hover .icon-box {
+            background-color: #eff6ff;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-title);
+            margin: 0;
+        }
+        .card-desc {
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin: 0 0 20px 0;
+            height: 40px;
+            overflow: hidden;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+            color: #94a3b8;
+        }
+        .go-link {
+            color: var(--accent-blue);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .doc-card:hover .go-link {
+            text-decoration: underline;
+        }
+
+        /* 하단 정보 영역 */
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            display: table;
+            width: 100%;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .footer-left {
+            display: table-cell;
+            text-align: left;
+        }
+        .footer-right {
+            display: table-cell;
+            text-align: right;
+        }
+
+        /* 모바일 스크린 대응 반응형 미디어쿼리 (1열 전환) */
+        @media (max-width: 768px) {
+            .meta-header, .grid-container, .grid-row, .grid-cell, footer, .footer-left, .footer-right {
+                display: block !important;
+                width: 100% !important;
+                text-align: left !important;
+            }
+            .grid-cell {
+                margin-bottom: 20px;
+            }
+            .grid-container {
+                margin: 0;
+            }
+            .meta-right {
+                margin-top: 10px;
+            }
+            .footer-right {
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        
+        <!-- 상단 메타 정보 표시 헤더 바 -->
+        <div class="meta-header">
+            <div class="meta-left">
+                <span class="company-badge">[COMPANY NAME]</span>
+                <span class="dept-badge">[DEPARTMENT]</span>
+            </div>
+            <div class="meta-right">
+                <span class="sys-status"><span class="status-dot"></span>FAB 인트라넷 보안 문서 등급 (Class-I)</span>
+            </div>
+        </div>
+
+        <!-- 중앙 인트로 메인 대시보드 배너 -->
+        <div class="intro-section">
+            <h1>AI 기반 스마트 제조 엔지니어링 문서 포털</h1>
+            <p>본 포털은 첨단 반도체/디스플레이 제조 라인의 핵심 데이터, 공정 가이드, 그리고 설비 리스크 관리를 유기적으로 연계하는 스마트 엔지니어링 허브입니다. 실시간 수율 향상과 원인 분석 고도화를 지원합니다.</p>
+        </div>
+
+        <!-- 핵심 링크 카드 2열 그리드 레이아웃 -->
+        <div class="grid-container">
+            
+            <!-- 첫 번째 열: 공정 규격 관리 파트 -->
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <a href="sop.html" class="doc-card">
+                        <div class="card-header">
+                            <div class="icon-box">📜</div>
+                            <h2 class="card-title">CVD 공정 표준 작업 지침서 (SOP)</h2>
+                        </div>
+                        <p class="card-desc">박막 증착 공정의 안전 수칙, 장비 가동 절차, 에러 코드별 알람 조치 흐름도를 표준화한 매뉴얼 문서입니다.</p>
+                        <div class="card-footer">
+                            <span>형식: HTML 사양서</span>
+                            <span class="go-link">바로가기 ➔</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="grid-cell">
+                    <a href="8d_report.html" class="doc-card">
+                        <div class="card-header">
+                            <div class="icon-box">📊</div>
+                            <h2 class="card-title">불량 분석 보고서 (8D Report)</h2>
+                        </div>
+                        <p class="card-desc">라인 내 비상 불량 발생 시 교차기능팀(CFT) 구성부터 5-Why 원인 추적 및 정정 조치를 관리하는 글로벌 표준 리포트 양식입니다.</p>
+                        <div class="card-footer">
+                            <span>형식: HTML 대시보드</span>
+                            <span class="go-link">바로가기 ➔</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 두 번째 열: 예방 보전 및 가이드 파트 -->
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <a href="check_list.html" class="doc-card">
+                        <div class="card-header">
+                            <div class="icon-box">✅</div>
+                            <h2 class="card-title">설비 예방보전 점검 체크리스트</h2>
+                        </div>
+                        <p class="card-desc">교대 근무(AM/PM) 및 주간 정기 PM 시 가스 압력, 진공도, 소스 파워를 실시간 체크 및 조건부 이상을 감지하는 인터랙티브 점검 시트입니다.</p>
+                        <div class="card-footer">
+                            <span>형식: HTML 인터랙티브 탭</span>
+                            <span class="go-link">바로가기 ➔</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="grid-cell">
+                    <a href="parameters.html" class="doc-card">
+                        <div class="card-header">
+                            <div class="icon-box">⚙️</div>
+                            <h2 class="card-title">공정 파라미터 표준 가이드</h2>
+                        </div>
+                        <p class="card-desc">CVD, 식각, 포토, CMP, 세정 등 5대 핵심 공정의 정상/경고 한계값 대조 및 실시간 파라미터 고속 키워드 검색 엔진이 포함된 기술 가이드입니다.</p>
+                        <div class="card-footer">
+                            <span>형식: HTML 서치 가이드</span>
+                            <span class="go-link">바로가기 ➔</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 하단 푸터 영역 -->
+        <footer>
+            <div class="footer-left">
+                <p>시스템 구축일: <strong>2026년 05월 23일</strong> | 시스템 아키텍트: <strong>품질 및 공정관리 통합 AI 엔지니어</strong></p>
+            </div>
+            <div class="footer-right">
+                <p>© 2026 AI-Driven Smart Manufacturing Hub. All Corporate Security Reserved.</p>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>

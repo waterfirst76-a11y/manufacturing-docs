@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반도체/디스플레이 핵심 제조 공정 파라미터 가이드 (FAB Standard)</title>
+    <style>
+        /* 글로벌 디자인 가이드라인 테마 변수 */
+        :root {
+            --primary-navy: #0f172a;       /* Slate 900 (메인 딥네이비) */
+            --secondary-blue: #2563eb;     /* Blue 600 (포인트 블루) */
+            --border-color: #cbd5e1;       /* Slate 300 */
+            --bg-light: #f8fafc;           /* Slate 50 */
+            --text-main: #334155;          /* Slate 700 */
+            --text-dark: #0f172a;          /* Slate 900 */
+            
+            /* 상태 표시 색상 */
+            --status-normal-bg: #d1fae5;   /* Light Emerald */
+            --status-normal-text: #065f46;
+            --status-warning-bg: #fef3c7;  /* Light Amber */
+            --status-warning-text: #92400e;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-main);
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 30px 15px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 헤더 상부 레이아웃 */
+        header {
+            border-bottom: 2px solid var(--primary-navy);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        h1 {
+            font-size: 24px;
+            color: var(--text-dark);
+            margin: 0 0 5px 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .sub-title {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+        .meta-info {
+            text-align: right;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .meta-info strong {
+            color: var(--text-dark);
+        }
+
+        /* 엔지니어 정보 및 유틸리티 검색란 영역 */
+        .control-panel {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .engineer-form {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            align-items: center;
+        }
+        .engineer-form label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .engineer-form input {
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            width: 130px;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 280px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 7px 12px 7px 32px;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 10px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* 공정별 내비게이션 탭 인터페이스 */
+        .tabs-nav {
+            display: flex;
+            border-bottom: 2px solid var(--primary-navy);
+            margin-bottom: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .tab-btn {
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            background-color: #e2e8f0;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            color: #475569;
+            cursor: pointer;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            margin-right: 4px;
+            transition: all 0.15s ease-in-out;
+        }
+        .tab-btn:hover {
+            background-color: #cbd5e1;
+        }
+        .tab-btn.active {
+            background-color: var(--primary-navy);
+            color: white;
+            border-color: var(--primary-navy);
+        }
+
+        /* 공정 테이블 파트 */
+        .tab-content {
+            display: none;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            background-color: white;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .param-table th, .param-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .param-table th {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        .param-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        /* 테이블 텍스트 및 상태 얼라인 정렬 */
+        .center { text-align: center; }
+        .bold { font-weight: 600; color: var(--text-dark); }
+        
+        /* 조건부 서식에 따른 시각화 스타일 */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+        }
+        .status-normal {
+            background-color: var(--status-normal-bg);
+            color: var(--status-normal-text);
+            border: 1px solid #a7f3d0;
+        }
+        .status-warning {
+            background-color: var(--status-warning-bg);
+            color: var(--status-warning-text);
+            border: 1px solid #fde68a;
+        }
+
+        /* 프린트 액션 버튼 */
+        .print-footer {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .btn-print {
+            background-color: var(--secondary-blue);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-print:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* 검색 필터링으로 행이 숨겨질 때 클래스 */
+        .row-hidden {
+            display: none !important;
+        }
+
+        /* 인쇄 최적화 가이드라인 적용 */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .control-panel, .tabs-nav, .print-footer {
+                display: none !important; /* 웹 전용 버튼 및 검색, 내비게이션 숨김 */
+            }
+            .tab-content {
+                display: block !important; /* 인쇄 시에는 모든 공정별 탭을 순서대로 바인딩하여 한 번에 리포팅 */
+                border: none;
+                padding: 0;
+                page-break-after: always;
+            }
+            .tab-content::before {
+                content: "■ 공정 부문: " attr(data-process-name) " 파라미터 표준 가이드";
+                display: block;
+                font-size: 15px;
+                font-weight: 700;
+                color: black;
+                margin-top: 30px;
+                margin-bottom: 10px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 4px;
+            }
+            .tab-content:last-child {
+                page-break-after: avoid;
+            }
+            .param-table th {
+                background-color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .badge {
+                border: 1px solid #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- 문서 헤더 영역 -->
+        <header>
+            <div class="header-top">
+                <div>
+                    <h1>공정 파라미터 표준 관리 가이드</h1>
+                    <p class="sub-title">Fabrication Line Process Parameter Reference Guide (FAB-STD)</p>
+                </div>
+                <div class="meta-info">
+                    <p>문서번호: <strong>STD-FAB-PAR-09</strong></p>
+                    <p>마지막 업데이트: <strong>2026-05-23</strong></p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 담당 엔지니어 정보 입력란 및 실시간 검색 패널 -->
+        <div class="control-panel">
+            <div class="engineer-form">
+                <label for="eng-dept">🏢 담당 부서:</label>
+                <input type="text" id="eng-dept" value="공정기술 1팀">
+                <label for="eng-name">👤 담당 엔지니어:</label>
+                <input type="text" id="eng-name" placeholder="홍길동 책임">
+            </div>
+            <div class="search-box">
+                <input type="text" id="paramSearch" placeholder="파라미터명 또는 비고 검색..." onkeyup="filterParameters()">
+            </div>
+        </div>
+
+        <!-- 공정별 탭 락 탭 메뉴 구성 -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab(event, 'cvd-tab')">CVD (화학기상증착)</button>
+            <button class="tab-btn" onclick="switchTab(event, 'etch-tab')">Etching (식각 공정)</button>
+            <button class="tab-btn" onclick="switchTab(event, 'photo-tab')">Photo (노광 공정)</button>
+            <button class="tab-btn" onclick="switchTab(event, 'cmp-tab')">CMP (화학기계적연마)</button>
+            <button class="tab-btn" onclick="switchTab(event, 'clean-tab')">Cleaning (세정 공정)</button>
+        </div>
+
+        <!-- ================= 1. CVD 탭 콘텐츠 ================= -->
+        <div id="cvd-tab" class="tab-content active" data-process-name="CVD">
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">파라미터명</th>
+                        <th style="width: 10%;">단위</th>
+                        <th style="width: 20%;">정상 범위 (Normal)</th>
+                        <th style="width: 20%;">경고 범위 (Warning)</th>
+                        <th style="width: 25%;">비고 (Remarks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">Chamber Pressure</td>
+                        <td class="center">Torr</td>
+                        <td class="center"><span class="badge status-normal">2.8 ~ 3.2</span></td>
+                        <td class="center"><span class="badge status-warning">2.5~2.8 / 3.2~3.5</span></td>
+                        <td>박막 Uniformity 직접 영향 인자</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Susceptor Temperature</td>
+                        <td class="center">°C</td>
+                        <td class="center"><span class="badge status-normal">395 ~ 405</span></td>
+                        <td class="center"><span class="badge status-warning">380~395 / 405~415</span></td>
+                        <td>Heater 가열 요소 격차 모니터링 필수</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">SiH4 Gas Flow Rate</td>
+                        <td class="center">sccm</td>
+                        <td class="center"><span class="badge status-normal">175 ~ 185</span></td>
+                        <td class="center"><span class="badge status-warning">160~175 / 185~200</span></td>
+                        <td>MFC 소스 가스 공급 유량 연동</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">RF High Power</td>
+                        <td class="center">W</td>
+                        <td class="center"><span class="badge status-normal">1470 ~ 1530</span></td>
+                        <td class="center"><span class="badge status-warning">1400~1470 / 1530~1600</span></td>
+                        <td>플라즈마 밀도 안정화 인터록 사양</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= 2. Etching 탭 콘텐츠 ================= -->
+        <div id="etch-tab" class="tab-content" data-process-name="Etching">
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">파라미터명</th>
+                        <th style="width: 10%;">단위</th>
+                        <th style="width: 20%;">정상 범위 (Normal)</th>
+                        <th style="width: 20%;">경고 범위 (Warning)</th>
+                        <th style="width: 25%;">비고 (Remarks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">Source RF Power (ICP)</td>
+                        <td class="center">W</td>
+                        <td class="center"><span class="badge status-normal">780 ~ 820</span></td>
+                        <td class="center"><span class="badge status-warning">750~780 / 820~850</span></td>
+                        <td>식각 이온 밀도 제어 변수</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Bias RF Power</td>
+                        <td class="center">W</td>
+                        <td class="center"><span class="badge status-normal">145 ~ 155</span></td>
+                        <td class="center"><span class="badge status-warning">130~145 / 155~170</span></td>
+                        <td>이온 직진성 및 비등방성 식각 프로파일 결정</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Cl2 Gas Flow</td>
+                        <td class="center">sccm</td>
+                        <td class="center"><span class="badge status-normal">48 ~ 52</span></td>
+                        <td class="center"><span class="badge status-warning">45~48 / 52~55</span></td>
+                        <td>메인 식각 화학 가스 유량</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">ESC DC Voltage</td>
+                        <td class="center">V</td>
+                        <td class="center"><span class="badge status-normal">2400 ~ 2600</span></td>
+                        <td class="center"><span class="badge status-warning">2200~2400 / 2600~2800</span></td>
+                        <td>정전척 웨이퍼 흡착 및 디척킹 안전 모니터링</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= 3. Photo 탭 콘텐츠 ================= -->
+        <div id="photo-tab" class="tab-content" data-process-name="Photo">
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">파라미터명</th>
+                        <th style="width: 10%;">단위</th>
+                        <th style="width: 20%;">정상 범위 (Normal)</th>
+                        <th style="width: 20%;">경고 범위 (Warning)</th>
+                        <th style="width: 25%;">비고 (Remarks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">Exposure Energy (Dose)</td>
+                        <td class="center">mJ/cm²</td>
+                        <td class="center"><span class="badge status-normal">32.5 ~ 33.5</span></td>
+                        <td class="center"><span class="badge status-warning">30.0~32.5 / 33.5~35.0</span></td>
+                        <td>CD(Critical Dimension) 선폭 제어 핵심 인자</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Scanner Focus Depth</td>
+                        <td class="center">µm</td>
+                        <td class="center"><span class="badge status-normal">-0.05 ~ +0.05</span></td>
+                        <td class="center"><span class="badge status-warning">-0.10~-0.05 / +0.05~+0.10</span></td>
+                        <td>초점 이탈 시 PR 패턴 무너짐 및 마진 저하 발생</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">PR Spin Speed</td>
+                        <td class="center">rpm</td>
+                        <td class="center"><span class="badge status-normal">2950 ~ 3050</span></td>
+                        <td class="center"><span class="badge status-warning">2800~2950 / 3050~3200</span></td>
+                        <td>감광액 도포 두께 켄트롤 타겟</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Soft Bake Temp</td>
+                        <td class="center">°C</td>
+                        <td class="center"><span class="badge status-normal">108 ~ 112</span></td>
+                        <td class="center"><span class="badge status-warning">100~108 / 112~120</span></td>
+                        <td>노광 전 솔벤트 성분 잔류량 제어 용도</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= 4. CMP 탭 콘텐츠 ================= -->
+        <div id="cmp-tab" class="tab-content" data-process-name="CMP">
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">파라미터명</th>
+                        <th style="width: 10%;">단위</th>
+                        <th style="width: 20%;">정상 범위 (Normal)</th>
+                        <th style="width: 20%;">경고 범위 (Warning)</th>
+                        <th style="width: 25%;">비고 (Remarks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">Platen Down Force</td>
+                        <td class="center">psi</td>
+                        <td class="center"><span class="badge status-normal">3.8 ~ 4.2</span></td>
+                        <td class="center"><span class="badge status-warning">3.2~3.8 / 4.2~4.8</span></td>
+                        <td>웨이퍼 면 가압력 설정치 (Polishing Rate 제어)</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Slurry Flow Rate</td>
+                        <td class="center">mL/min</td>
+                        <td class="center"><span class="badge status-normal">190 ~ 210</span></td>
+                        <td class="center"><span class="badge status-warning">170~190 / 210~230</span></td>
+                        <td>화학 연마 패드 표면 정량 공급 확인</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Head Rotation Speed</td>
+                        <td class="center">rpm</td>
+                        <td class="center"><span class="badge status-normal">85 ~ 95</span></td>
+                        <td class="center"><span class="badge status-warning">75~85 / 95~105</span></td>
+                        <td>회전 불균일 시 평탄도 유니포미티 저하 유발</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= 5. Cleaning 탭 콘텐츠 ================= -->
+        <div id="clean-tab" class="tab-content" data-process-name="Cleaning">
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">파라미터명</th>
+                        <th style="width: 10%;">단위</th>
+                        <th style="width: 20%;">정상 범위 (Normal)</th>
+                        <th style="width: 20%;">경고 범위 (Warning)</th>
+                        <th style="width: 25%;">비고 (Remarks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">SPM Mixed Ratio (H2SO4:H2O2)</td>
+                        <td class="center">Ratio</td>
+                        <td class="center"><span class="badge status-normal">4:1 ~ 5:1</span></td>
+                        <td class="center"><span class="badge status-warning">3:1~4:1 / 5:1~6:1</span></td>
+                        <td>유기 오염물 및 PR 스트립 세정력 확보용 비율</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">HF Dilution Ratio</td>
+                        <td class="center">Ratio</td>
+                        <td class="center"><span class="badge status-normal">95:1 ~ 105:1</span></td>
+                        <td class="center"><span class="badge status-warning">80:1~95:1 / 105:1~120:1</span></td>
+                        <td>자연 산화막(Native Oxide) 미세 에칭 제거 조건</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Megasonic Power</td>
+                        <td class="center">W</td>
+                        <td class="center"><span class="badge status-normal">280 ~ 320</span></td>
+                        <td class="center"><span class="badge status-warning">250~280 / 320~350</span></td>
+                        <td>초음파 에너지를 통한 미세 파티클 탈착 거동 제어</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 하단 출력 툴 제어 섹션 -->
+        <div class="print-footer">
+            <button class="btn-print" onclick="window.print()">🖨️ 가이드 통합 인쇄 / PDF 출력</button>
+        </div>
+
+    </div>
+
+    <!-- 인터랙티브 비헤이비어 자바스크립트 엔진 -->
+    <script>
+        // 탭 대시보드 전환 메커니즘
+        function switchTab(evt, tabId) {
+            // 모든 탭 콘텐츠 숨김 및 리셋
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            // 모든 탭 버튼 비활성화 상태화
+            const tabButtons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+
+            // 클릭한 대상만 타겟 활성화 조치
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            
+            // 탭 변경 시 기존 검색어 필터링 초기화 스코프 연동
+            document.getElementById('paramSearch').value = "";
+            filterParameters();
+        }
+
+        // 파라미터 및 비고 내용 실시간 서치 키워드 필터링 엔진
+        function filterParameters() {
+            const input = document.getElementById('paramSearch');
+            const filter = input.value.toLowerCase();
+            
+            // 현재 화면 활성화 상태로 열려있는 탭 테이블 안의 행들만 추출하여 매핑
+            const activeTab = document.querySelector('.tab-content.active');
+            const rows = activeTab.getElementsByTagName('tr');
+
+            // Header 행(index 0)을 제외하고 루프 연산 수행
+            for (let i = 1; i < rows.length; i++) {
+                const paramNameCell = rows[i].getElementsByTagName('td')[0];
+                const remarksCell = rows[i].getElementsByTagName('td')[4];
+                
+                if (paramNameCell || remarksCell) {
+                    const paramNameText = paramNameCell.textContent || paramNameCell.innerText;
+                    const remarksText = remarksCell.textContent || remarksCell.innerText;
+                    
+                    // 검색어 포함 여부 플래그 대입
+                    if (paramNameText.toLowerCase().indexOf(filter) > -1 || remarksText.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].classList.remove('row-hidden');
+                    } else {
+                        rows[i].classList.add('row-hidden');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
